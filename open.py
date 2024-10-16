@@ -78,6 +78,7 @@ def add_product(products, name, desc, price, quantity):
         "quantity" : quantity
     })
     return f"Lyckades lägga till{name}"
+    save_products()
 
 
 
@@ -95,6 +96,17 @@ def edit_product(products):
             product["quantity"] = quantity
 
 
+def save_products(db_products):
+    csv_file_path = "db_products.csv"
+
+    # Write the products data to a CSV file
+    with open(csv_file_path, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=["id", "name", "desc", "price", "quantity"])
+        writer.writeheader()  # Write the header row
+        writer.writerows(products)  # Write the product data
+
+    print(f"Data successfully saved to {csv_file_path}")
+
 
 
 
@@ -106,6 +118,7 @@ while True:
         os.system('cls' if os.name == 'nt' else 'clear')
 
         print(view_products(products))  # Show ordered list of products
+
 
 
 
@@ -129,10 +142,13 @@ while True:
                     print("nummer")
             
             print(add_product(products, name, desc, price, quantity))
+            save_products(products)
+
             
 
         if choice == "Ä": #Ändra
             edit_product(products)
+            save_products(products)
 
             
             
@@ -163,7 +179,8 @@ while True:
                     id = selected_product['id']  # Extract the actual ID of the product
 
                     print(remove_product(products, id))  # Remove product using the actual ID
-                    sleep(0.5)            
+                    sleep(0.5)       
+                    save_products(products)     
 
                 else:
                     print("Ogiltig produkt")
